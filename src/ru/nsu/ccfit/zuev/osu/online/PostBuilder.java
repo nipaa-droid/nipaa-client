@@ -1,13 +1,14 @@
 package ru.nsu.ccfit.zuev.osu.online;
 
 import com.dgsrz.bancho.security.SecurityUtils;
+import com.google.gson.stream.JsonReader;
 
 import okhttp3.FormBody;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.Request;
 
 import org.anddev.andengine.util.Debug;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
@@ -88,10 +89,18 @@ public class PostBuilder {
             Debug.i("request --------Content---------");
             String line = null;
             BufferedReader reader = new BufferedReader(new StringReader(resp.body().string()));
-            while((line = reader.readLine()) != null) {
-                Debug.i(String.format("request [%d]: %s", response.size(), line));
-                response.add(line);
+            String jsonString = reader.readLine();
+            if (jsonString != null) {
+                JSONObject json = new JSONObject(jsonString);
+                System.out.println(jsonString);
+                String resData = json.getString("data");
+                BufferedReader resReader = new BufferedReader(new StringReader(resData));
+                while((line = resReader.readLine()) != null) {
+                    Debug.i(String.format("request [%d]: %s", response.size(), line));
+                    response.add(line);
+                }
             }
+
             Debug.i("request url=" + scriptUrl);
             Debug.i("request -----End of content-----");
         } catch(Exception e) {

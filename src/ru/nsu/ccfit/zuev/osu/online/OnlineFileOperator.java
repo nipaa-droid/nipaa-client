@@ -40,7 +40,6 @@ public class OnlineFileOperator {
                 .addFormDataPart("uploadedfile", file.getName(), fileBody)
                 .addFormDataPart("hash", checksum)
                 .addFormDataPart("replayID", replayID)
-                .addFormDataPart("sign", signature)
                 .build();
             Request request = new Request.Builder().url(urlstr)
                 .post(requestBody).build();

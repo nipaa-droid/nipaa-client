@@ -3,31 +3,27 @@ package ru.nsu.ccfit.zuev.osu.online;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import okhttp3.OkHttpClient;
 
-import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import org.anddev.andengine.util.Debug;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import ru.nsu.ccfit.zuev.osu.BeatmapInfo;
 import ru.nsu.ccfit.zuev.osu.Config;
 import ru.nsu.ccfit.zuev.osu.GlobalManager;
-import ru.nsu.ccfit.zuev.osu.MainActivity;
 import ru.nsu.ccfit.zuev.osu.ResourceManager;
 import ru.nsu.ccfit.zuev.osu.TrackInfo;
 import ru.nsu.ccfit.zuev.osu.helper.MD5Calcuator;
 import ru.nsu.ccfit.zuev.osu.online.PostBuilder.RequestException;
 
 public class OnlineManager {
-    public static final String hostname = "osudroid.moe";
-    public static final String endpoint = "https://" + hostname + "/api/";
+    public static final String hostname = "nipaa.vercel.app";
+    public static  final String baseEndPoint = "https://" + hostname + "/api/";
     private static final String onlineVersion = "29";
 
     public static final OkHttpClient client = new OkHttpClient();
@@ -59,7 +55,7 @@ public class OnlineManager {
     }
 
     public static String getReplayURL(int playID) {
-        return endpoint + "upload/" + playID + ".odr";
+        return baseEndPoint + "upload/" + playID + ".odr";
     }
 
     public void Init(Context context) {
@@ -87,6 +83,8 @@ public class OnlineManager {
 		{
 			Debug.i(str);
 		}*/
+
+        System.out.println(response);
 
         if (response.size() == 0 || response.get(0).length() == 0) {
             failMessage = "Got empty response";
@@ -122,10 +120,12 @@ public class OnlineManager {
 
         PostBuilder post = new PostBuilder();
         post.addParam("username", username);
-        post.addParam("password", MD5Calcuator.getStringMD5(password + "taikotaiko"));
+        post.addParam("password", password);
         post.addParam("version", onlineVersion);
 
-        ArrayList<String> response = sendRequest(post, endpoint + "login.php");
+        ArrayList<String> response = sendRequest(post, baseEndPoint + "login");
+
+        System.out.println(response);
 
         if (response == null) {
             return false;
@@ -172,11 +172,11 @@ public class OnlineManager {
                             final String deviceID) throws OnlineManagerException {
         PostBuilder post = new PostBuilder();
         post.addParam("username", username);
-        post.addParam("password", MD5Calcuator.getStringMD5(password + "taikotaiko"));
+        post.addParam("password", password);
         post.addParam("email", email);
         post.addParam("deviceID", deviceID);
 
-        ArrayList<String> response = sendRequest(post, endpoint + "register.php");
+        ArrayList<String> response = sendRequest(post, baseEndPoint + "register");
 
         Bundle params = new Bundle();
         params.putString(FirebaseAnalytics.Param.METHOD, "ingame");
@@ -212,7 +212,7 @@ public class OnlineManager {
         if (osuID != null)
             post.addParam("songID", osuID);
 
-        ArrayList<String> response = sendRequest(post, endpoint + "submit.php");
+        ArrayList<String> response = sendRequest(post, baseEndPoint + "play");
 
         if (response == null) {
             if (failMessage.equals("Cannot log in") && stayOnline) {
@@ -251,11 +251,12 @@ public class OnlineManager {
         Debug.i("Sending record...");
 
         PostBuilder post = new PostBuilder();
+        post.addParam("ssid", ssid);
         post.addParam("userID", userId);
         post.addParam("playID", playID);
         post.addParam("data", data);
 
-        ArrayList<String> response = sendRequest(post, endpoint + "submit.php");
+        ArrayList<String> response = sendRequest(post, baseEndPoint + "submit");
 
         if (response == null) {
             return false;
@@ -291,10 +292,11 @@ public class OnlineManager {
 
     public ArrayList<String> getTop(final File trackFile, final String hash) throws OnlineManagerException {
         PostBuilder post = new PostBuilder();
+        post.addParam("ssid", ssid);
         post.addParam("filename", trackFile.getName());
         post.addParam("hash", hash);
 
-        ArrayList<String> response = sendRequest(post, endpoint + "getrank.php");
+        ArrayList<String> response = sendRequest(post, baseEndPoint + "getrank");
 
         if (response == null) {
             return new ArrayList<String>();
@@ -351,14 +353,15 @@ public class OnlineManager {
     public void sendReplay(String filename) {
         if (replayID <= 0) return;
         Debug.i("Sending replay '" + filename + "' for id = " + replayID);
-        OnlineFileOperator.sendFile(endpoint + "upload.php", filename, String.valueOf(replayID));
+        OnlineFileOperator.sendFile(baseEndPoint + "upload", filename, String.valueOf(replayID));
     }
 
     public String getScorePack(int playid) throws OnlineManagerException {
         PostBuilder post = new PostBuilder();
         post.addParam("playID", String.valueOf(playid));
+        post.addParam("ssid", ssid);
 
-        ArrayList<String> response = sendRequest(post, endpoint + "gettop.php");
+        ArrayList<String> response = sendRequest(post, baseEndPoint + "gettop");
 
         if (response == null || response.size() < 2) {
             return "";

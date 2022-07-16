@@ -100,7 +100,7 @@ import ru.nsu.ccfit.zuev.osuplus.R;
 
 public class GameScene implements IUpdateHandler, GameObjectListener,
         IOnSceneTouchListener {
-    public static final int CursorCount = 10;
+    public static final int CursorCount = 3;
     private final Engine engine;
     private final Cursor[] cursors = new Cursor[CursorCount];
     private final boolean[] cursorIIsDown = new boolean[CursorCount];
