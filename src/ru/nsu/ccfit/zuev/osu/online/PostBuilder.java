@@ -83,7 +83,7 @@ public class PostBuilder {
                 .url(scriptUrl)
                 .post(formBodyBuilder.build())
                 .build();
-            Response resp = OnlineManager.client.newCall(request).execute();
+            Response resp = OnlineManager.getInstance().client.newCall(request).execute();
 
             Debug.i("request url=" + scriptUrl);
             Debug.i("request --------Content---------");

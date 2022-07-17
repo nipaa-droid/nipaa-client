@@ -4,6 +4,10 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
+import com.franmontiel.persistentcookiejar.ClearableCookieJar;
+import com.franmontiel.persistentcookiejar.PersistentCookieJar;
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import okhttp3.OkHttpClient;
@@ -26,10 +30,13 @@ public class OnlineManager {
     public static  final String baseEndPoint = "https://" + hostname + "/api/";
     private static final String onlineVersion = "29";
 
-    public static final OkHttpClient client = new OkHttpClient();
 
     private static OnlineManager instance = null;
-    private Context context;
+
+    public ClearableCookieJar cookieJar;
+
+    public OkHttpClient client;
+
     private String failMessage = "";
 
     private boolean stayOnline = true;
@@ -63,7 +70,10 @@ public class OnlineManager {
         this.username = Config.getOnlineUsername();
         this.password = Config.getOnlinePassword();
         this.deviceID = Config.getOnlineDeviceID();
-        this.context = context;
+        this.cookieJar = new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
+        this.client =  new OkHttpClient.Builder()
+                .cookieJar(cookieJar)
+                .build();
     }
 
     private ArrayList<String> sendRequest(PostBuilder post, String url) throws OnlineManagerException {
@@ -148,6 +158,7 @@ public class OnlineManager {
         this.username = params[5];
         if (params.length >= 7) {
             avatarURL = params[6];
+
         } else {
             avatarURL = "";
         }

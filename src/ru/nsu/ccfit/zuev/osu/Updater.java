@@ -48,7 +48,7 @@ public class Updater {
         Request request = new Request.Builder()
             .url(url)
             .build();
-        return OnlineManager.client.newCall(request).execute().body();
+        return OnlineManager.getInstance().client.newCall(request).execute().body();
     }
 
     public void checkForUpdates() {

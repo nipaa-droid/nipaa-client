@@ -43,7 +43,7 @@ public class OnlineFileOperator {
                 .build();
             Request request = new Request.Builder().url(urlstr)
                 .post(requestBody).build();
-            Response response = OnlineManager.client.newCall(request).execute();
+            Response response = OnlineManager.getInstance().client.newCall(request).execute();
             String responseMsg = response.body().string();
 
             Debug.i("sendFile signatureResponse " + responseMsg);
@@ -68,7 +68,7 @@ public class OnlineFileOperator {
             Request request = new Request.Builder()
                 .url(urlstr)
                 .build();
-            Response response = OnlineManager.client.newCall(request).execute();
+            Response response = OnlineManager.getInstance().client.newCall(request).execute();
             BufferedSink sink = Okio.buffer(Okio.sink(file));
             sink.writeAll(response.body().source());
             response.close();
