@@ -114,7 +114,7 @@
 	<string name="online_registration_process">Registering...</string>
 	<string name="online_loadrecord">Loading record details...</string>
 	<string name="online_invlogin">Invalid login</string>
-	<string name="online_invpassword">Password should be 4-32 characters</string>
+	<string name="online_invpassword">Password should be 8-32 characters</string>
 	<string name="online_invconfirm">Passwords don\'t match</string>
 	<string name="online_invemail">Invaild e-mail</string>
 	<string name="online_regcomplete">Registration complete. Restart app to login</string>

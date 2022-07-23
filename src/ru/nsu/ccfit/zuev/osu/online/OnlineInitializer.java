@@ -63,7 +63,7 @@ public class OnlineInitializer implements View.OnClickListener {
             ToastLogger.showTextId(R.string.online_invlogin, true);
             return;
         }
-        if (password.length() < 4 || password.length() > 32) {
+        if (password.length() < 8 || password.length() > 32) {
             ToastLogger.showTextId(R.string.online_invpassword, true);
             return;
         }
