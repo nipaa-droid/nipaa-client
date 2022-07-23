@@ -489,10 +489,9 @@ public class ScoringScene {
                     OnlineManager.getInstance().isReadyToSend()) {
                 boolean hasUnrankedMod = SmartIterator.wrap(stat.getMod().iterator())
                     .applyFilter(m -> m.unranked).hasNext();
+
                 if (hasUnrankedMod
-                    || Config.isRemoveSliderLock()
-                    || ModMenu.getInstance().isChangeSpeed()
-                    || ModMenu.getInstance().isEnableForceAR()) {
+                    || Config.isRemoveSliderLock()) {
                     return;
                 }
 
